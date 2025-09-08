@@ -1,11 +1,9 @@
 -- Event Management Database Schema
--- Run this in MySQL Workbench to create the required tables
 
--- Create database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS event_management;
 USE event_management;
 
--- Users table with Clerk integration
+-- Users table 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     clerk_id VARCHAR(255) UNIQUE NOT NULL,
@@ -42,12 +40,11 @@ CREATE TABLE IF NOT EXISTS event_attendees (
     UNIQUE KEY unique_event_user (event_id, user_id)
 );
 
--- Insert a default admin user (replace the clerk_id with your actual Clerk user ID)
--- You can find your Clerk user ID in the Clerk dashboard or by logging in and checking the network tab
+
 INSERT IGNORE INTO users (clerk_id, email, first_name, last_name, role) 
 VALUES ('user_32PYaRuSpiIZwdjWXR4ix7iHERB', 'admin@example.com', 'Admin', 'User', 'admin');
 
--- Add some sample events for testing
+--sample events for testing
 INSERT IGNORE INTO events (title, description, date, location, created_by) VALUES
 ('Welcome Meeting', 'Introduction meeting for new members', '2025-01-15 10:00:00', 'Conference Room A', 1),
 ('Project Kickoff', 'Starting our new project initiative', '2025-01-20 14:00:00', 'Main Hall', 1),
