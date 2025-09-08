@@ -1,3 +1,4 @@
+import SmoothScrollProvider from "@/components/smooth-scroll-provider";
 import { ThemeProvider } from "@/components/Theme-Provider";
 import { Toaster } from "@/components/ui/sonner";
 import {
@@ -45,57 +46,59 @@ export default function RootLayout({
             attribute={"class"}
             disableTransitionOnChange
           >
-            <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="container flex h-14 items-center justify-between">
-                <div className="mr-4 flex">
-                  <Link className="mr-6 flex items-center space-x-2" href="/">
-                    <span className="font-bold sm:inline-block">
-                      Event Management
-                    </span>
-                  </Link>
-                  <SignedIn>
-                    <nav className="flex items-center space-x-6 text-sm font-medium">
-                      <Link
-                        className="transition-colors hover:text-foreground/80 text-foreground/60"
-                        href="/events"
-                      >
-                        Events
-                      </Link>
-                      <Link
-                        className="transition-colors hover:text-foreground/80 text-foreground/60"
-                        href="/dashboard/events"
-                      >
-                        Dashboard
-                      </Link>
-                    </nav>
-                  </SignedIn>
+            <SmoothScrollProvider>
+              <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container flex h-14 items-center justify-between">
+                  <div className="mr-4 flex">
+                    <Link className="mr-6 flex items-center space-x-2" href="/">
+                      <span className="font-bold sm:inline-block">
+                        Event Management
+                      </span>
+                    </Link>
+                    <SignedIn>
+                      <nav className="flex items-center space-x-6 text-sm font-medium">
+                        <Link
+                          className="transition-colors hover:text-foreground/80 text-foreground/60"
+                          href="/events"
+                        >
+                          Events
+                        </Link>
+                        <Link
+                          className="transition-colors hover:text-foreground/80 text-foreground/60"
+                          href="/dashboard/events"
+                        >
+                          Dashboard
+                        </Link>
+                      </nav>
+                    </SignedIn>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <SignedOut>
+                      <SignInButton mode="modal">
+                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                          Sign In
+                        </button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                          Sign Up
+                        </button>
+                      </SignUpButton>
+                    </SignedOut>
+                    <SignedIn>
+                      <UserButton />
+                    </SignedIn>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <SignedOut>
-                    <SignInButton mode="modal">
-                      <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                        Sign In
-                      </button>
-                    </SignInButton>
-                    <SignUpButton mode="modal">
-                      <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                        Sign Up
-                      </button>
-                    </SignUpButton>
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton />
-                  </SignedIn>
-                </div>
-              </div>
-            </header>
-            <main className="min-h-screen bg-background">{children}</main>
-            <Toaster
-              position="bottom-right"
-              expand={true}
-              richColors
-              closeButton
-            />
+              </header>
+              <main className="min-h-screen bg-background">{children}</main>
+              <Toaster
+                position="bottom-right"
+                expand={true}
+                richColors
+                closeButton
+              />
+            </SmoothScrollProvider>
           </ThemeProvider>
         </body>
       </html>
