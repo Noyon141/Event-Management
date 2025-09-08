@@ -3,6 +3,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { Event } from "@/types/events";
 import { motion, Variants } from "framer-motion";
 import {
@@ -29,6 +39,14 @@ export default function EventsContent({
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    status: "upcoming" as Event["status"],
+  });
 
   const fetchEvents = async () => {
     try {
@@ -172,6 +190,68 @@ export default function EventsContent({
       console.error("Error deleting event:", error);
       toast.error("Failed to delete event");
     }
+  };
+
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setEditFormData({
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      location: event.location,
+      status: event.status,
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingEvent) return;
+
+    // Validation
+    if (
+      !editFormData.title.trim() ||
+      !editFormData.date ||
+      !editFormData.location.trim()
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/events/${editingEvent.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (response.ok) {
+        const { event: updatedEvent } = await response.json();
+        setEvents(
+          events.map((event) =>
+            event.id === editingEvent.id ? updatedEvent : event
+          )
+        );
+        setEditingEvent(null);
+        toast.success("Event updated successfully");
+      } else {
+        toast.error("Failed to update event");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast.error("Failed to update event");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEvent(null);
+    setEditFormData({
+      title: "",
+      description: "",
+      date: "",
+      location: "",
+      status: "upcoming",
+    });
   };
 
   const getStatusBadge = (event: Event) => {
@@ -436,6 +516,7 @@ export default function EventsContent({
                             <Button
                               variant="outline"
                               size="sm"
+                              onClick={() => handleEditEvent(event)}
                               className="text-xs"
                             >
                               <Edit3 className="h-3 w-3 mr-1" />
@@ -548,6 +629,87 @@ export default function EventsContent({
           </motion.div>
         )}
       </div>
+
+      {/* Edit Event Dialog */}
+      <Dialog open={!!editingEvent} onOpenChange={() => setEditingEvent(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Event</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="edit-title">Title *</Label>
+              <Input
+                id="edit-title"
+                value={editFormData.title}
+                onChange={(e) =>
+                  setEditFormData((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
+                }
+                placeholder="Event title"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-description">Description</Label>
+              <Textarea
+                id="edit-description"
+                value={editFormData.description}
+                onChange={(e) =>
+                  setEditFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                placeholder="Event description"
+                rows={3}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-date">Date & Time *</Label>
+              <Input
+                id="edit-date"
+                type="datetime-local"
+                value={
+                  editFormData.date
+                    ? new Date(editFormData.date).toISOString().slice(0, 16)
+                    : ""
+                }
+                onChange={(e) =>
+                  setEditFormData((prev) => ({
+                    ...prev,
+                    date: new Date(e.target.value).toISOString(),
+                  }))
+                }
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-location">Location *</Label>
+              <Input
+                id="edit-location"
+                value={editFormData.location}
+                onChange={(e) =>
+                  setEditFormData((prev) => ({
+                    ...prev,
+                    location: e.target.value,
+                  }))
+                }
+                placeholder="Event location"
+                required
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
