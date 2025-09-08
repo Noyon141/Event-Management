@@ -1,14 +1,7 @@
 import pool from "@/lib/db";
+import { Event } from "@/types/events";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-type Event = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-};
 
 async function getEvents(): Promise<Event[]> {
   const [rows] = await pool.query("SELECT * FROM events ORDER BY date ASC");
