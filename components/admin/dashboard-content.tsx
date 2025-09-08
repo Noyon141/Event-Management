@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Event } from "@/types/events";
 import { motion, Variants } from "framer-motion";
 import {
   BarChart3,
@@ -14,16 +15,53 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventForm from "./event-form";
 import EventsList from "./events-list";
 
 export default function DashboardContent() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("/api/events");
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, [refreshTrigger]);
 
   const handleEventCreated = () => {
     setRefreshTrigger((prev) => prev + 1);
   };
+
+  // Calculate statistics
+  const totalEvents = events.length;
+  const upcomingEvents = events.filter((event) => {
+    const eventDate = new Date(event.date);
+    const now = new Date();
+    return (
+      eventDate > now &&
+      event.status !== "completed" &&
+      event.status !== "cancelled"
+    );
+  }).length;
+  const completedEvents = events.filter(
+    (event) => event.status === "completed"
+  ).length;
+  const completionRate =
+    totalEvents > 0 ? Math.round((completedEvents / totalEvents) * 100) : 0;
 
   const pageVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -108,10 +146,10 @@ export default function DashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">24</div>
-              <p className="text-xs text-muted-foreground">
-                +2 from last month
-              </p>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? "..." : totalEvents}
+              </div>
+              <p className="text-xs text-muted-foreground">All time events</p>
             </CardContent>
           </Card>
 
@@ -123,8 +161,10 @@ export default function DashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">8</div>
-              <p className="text-xs text-muted-foreground">Next 30 days</p>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? "..." : upcomingEvents}
+              </div>
+              <p className="text-xs text-muted-foreground">Active events</p>
             </CardContent>
           </Card>
 
@@ -132,13 +172,15 @@ export default function DashboardContent() {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
-                Avg. Attendance
+                Completion Rate
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">85%</div>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? "..." : `${completionRate}%`}
+              </div>
               <p className="text-xs text-muted-foreground">
-                +5% from last month
+                {completedEvents} of {totalEvents} completed
               </p>
             </CardContent>
           </Card>
