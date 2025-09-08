@@ -1,10 +1,19 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, Variants } from "framer-motion";
-import { BarChart3, CalendarDays, List, Plus, Users } from "lucide-react";
+import {
+  BarChart3,
+  CalendarDays,
+  ExternalLink,
+  List,
+  Plus,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import EventForm from "./event-form";
 import EventsList from "./events-list";
@@ -75,6 +84,14 @@ export default function DashboardContent() {
                 Create, manage, and track your events with ease
               </p>
             </div>
+          </div>
+          <div className="mt-4">
+            <Link href="/events">
+              <Button variant="outline" className="gap-2">
+                <ExternalLink className="h-4 w-4" />
+                View All Events
+              </Button>
+            </Link>
           </div>
         </motion.div>
 

@@ -1,4 +1,4 @@
-import { addEvent, getEvents, tempEvents } from "@/lib/temp-storage";
+import { addEvent, getEvents } from "@/lib/temp-storage";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { title, description, date, location } = body;
+    const { title, description, date, location, status } = body;
 
     if (!title || !date || !location) {
       return NextResponse.json(
@@ -18,20 +18,22 @@ export async function POST(req: Request) {
       );
     }
 
+    // Determine status based on date if not provided
+    const eventDate = new Date(date);
+    const now = new Date();
+    const defaultStatus = eventDate > now ? "upcoming" : "completed";
+
     // Use temporary storage for now (bypass database completely)
-    const newEvent = {
-      id: tempEvents.length + 1,
+    const newEvent = addEvent({
       title,
       description,
       date,
       location,
-      created_at: new Date().toISOString(),
-    };
-
-    addEvent(newEvent);
+      status: status || defaultStatus,
+    });
 
     return NextResponse.json(
-      { message: "Event created successfully", id: newEvent.id },
+      { message: "Event created successfully", event: newEvent },
       { status: 201 }
     );
   } catch (err) {
