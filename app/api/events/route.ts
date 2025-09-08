@@ -1,4 +1,4 @@
-import pool from "@/lib/db";
+import { addEvent, getEvents, tempEvents } from "@/lib/temp-storage";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -11,22 +11,39 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title, description, date, location } = body;
 
-    // find user in DB
-    const [users] = await pool.query(
-      "SELECT id, role FROM users WHERE clerk_id = ?",
-      [userId]
-    );
-    const user = (users as any[])[0];
-    if (!user || user.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!title || !date || !location) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
-    await pool.query(
-      "INSERT INTO events (title, description, date, location, created_by) VALUES (?, ?, ?, ?, ?)",
-      [title, description, date, location, user.id]
-    );
+    // Use temporary storage for now (bypass database completely)
+    const newEvent = {
+      id: tempEvents.length + 1,
+      title,
+      description,
+      date,
+      location,
+      created_at: new Date().toISOString(),
+    };
 
-    return NextResponse.json({ success: true });
+    addEvent(newEvent);
+
+    return NextResponse.json(
+      { message: "Event created successfully", id: newEvent.id },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    // Return temporary storage events
+    return NextResponse.json(getEvents());
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

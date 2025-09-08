@@ -23,7 +23,7 @@ export default async function EventsPage() {
         <p className="text-muted-foreground mb-8">
           Welcome to your event management dashboard! You are authenticated
         </p>
-
+      
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="p-6 border rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Total Events</h3>

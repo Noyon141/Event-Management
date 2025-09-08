@@ -4,11 +4,10 @@ import pool from "./db";
 
 export async function testDB() {
   try {
-    const [rows] = await pool.query("SELECT 1 + 1 AS result");
-    console.log("✅ DB Connected:", (rows as any)[0].result);
-    return true;
+    const [rows] = await pool.query("SELECT NOW() AS currentTime");
+    return (rows as any)[0].currentTime;
   } catch (err) {
     console.error("❌ DB Connection Failed:", err);
-    return false;
+    return null;
   }
 }
