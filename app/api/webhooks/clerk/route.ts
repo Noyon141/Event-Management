@@ -8,9 +8,17 @@ export async function POST(req: Request) {
 
   const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
 
-  let evt: any;
+  let evt: {
+    type: string;
+    data: {
+      id: string;
+      email_addresses: Array<{ email_address: string }>;
+      first_name: string;
+      last_name: string;
+    };
+  };
   try {
-    evt = wh.verify(payload, headers);
+    evt = wh.verify(payload, headers) as typeof evt;
   } catch (err) {
     console.error("❌ Webhook verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });

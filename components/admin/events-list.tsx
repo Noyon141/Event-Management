@@ -25,7 +25,7 @@ export default function EventsList({ refreshTrigger }: EventsListProps) {
         const data = await response.json();
         setEvents(data);
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch events");
     } finally {
       setLoading(false);
@@ -45,7 +45,7 @@ export default function EventsList({ refreshTrigger }: EventsListProps) {
         setEvents(events.filter((event) => event.id !== id));
         toast.success("Event deleted successfully");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete event");
     }
   };

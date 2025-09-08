@@ -66,7 +66,7 @@ export default function EventForm({ onEventCreated }: EventFormProps) {
       } else {
         throw new Error("Failed to create event");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to create event. Please try again.");
     } finally {
       setIsSubmitting(false);

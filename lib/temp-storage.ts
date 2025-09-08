@@ -1,15 +1,21 @@
 // Shared temporary storage for development
-export let tempEvents: any[] = [
-  {
-    id: 1,
-    title: "Sample Event",
-    description: "This is a sample event for testing",
-    date: "2025-01-15T10:00:00",
-    location: "Conference Room A",
-  },
-];
+export const tempEvents: Array<{
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  created_at?: string;
+}> = [];
 
-export function addEvent(event: any) {
+export function addEvent(event: {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  created_at?: string;
+}) {
   tempEvents.push(event);
 }
 
