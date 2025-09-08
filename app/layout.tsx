@@ -55,9 +55,9 @@ export default function RootLayout({
                     <nav className="flex items-center space-x-6 text-sm font-medium">
                       <a
                         className="transition-colors hover:text-foreground/80 text-foreground/60"
-                        href="/dashboard"
+                        href="/events"
                       >
-                        Dashboard
+                        Events
                       </a>
                     </nav>
                   </SignedIn>
