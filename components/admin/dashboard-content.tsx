@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Toaster } from "@/components/ui/sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, Variants } from "framer-motion";
+import { BarChart3, CalendarDays, List, Plus, Users } from "lucide-react";
+import { useState } from "react";
 import EventForm from "./event-form";
 import EventsList from "./events-list";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, Plus, List, BarChart3, Users } from "lucide-react";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardContent() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleEventCreated = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const pageVariants: Variants = {
@@ -31,25 +31,25 @@ export default function DashboardContent() {
 
   const headerVariants: Variants = {
     hidden: { opacity: 0, y: -20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
         ease: [0.04, 0.62, 0.23, 0.98],
-      }
+      },
     },
   };
 
   const statsVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       scale: 1,
       transition: {
         duration: 0.4,
         ease: [0.04, 0.62, 0.23, 0.98],
-      }
+      },
     },
   };
 
@@ -79,7 +79,7 @@ export default function DashboardContent() {
         </motion.div>
 
         {/* Stats Cards */}
-        <motion.div 
+        <motion.div
           variants={statsVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
@@ -92,7 +92,9 @@ export default function DashboardContent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">24</div>
-              <p className="text-xs text-muted-foreground">+2 from last month</p>
+              <p className="text-xs text-muted-foreground">
+                +2 from last month
+              </p>
             </CardContent>
           </Card>
 
@@ -118,7 +120,9 @@ export default function DashboardContent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">85%</div>
-              <p className="text-xs text-muted-foreground">+5% from last month</p>
+              <p className="text-xs text-muted-foreground">
+                +5% from last month
+              </p>
             </CardContent>
           </Card>
         </motion.div>
@@ -131,15 +135,15 @@ export default function DashboardContent() {
           <Tabs defaultValue="create" className="w-full">
             <div className="border-b bg-muted/50 px-6 py-4">
               <TabsList className="bg-background border shadow-sm">
-                <TabsTrigger 
-                  value="create" 
+                <TabsTrigger
+                  value="create"
                   className="flex items-center gap-2 px-6 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Plus className="h-4 w-4" />
                   Create Event
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="manage" 
+                <TabsTrigger
+                  value="manage"
                   className="flex items-center gap-2 px-6 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <List className="h-4 w-4" />
@@ -152,9 +156,12 @@ export default function DashboardContent() {
               <TabsContent value="create" className="mt-0">
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-semibold">Create a New Event</h2>
+                    <h2 className="text-2xl font-semibold">
+                      Create a New Event
+                    </h2>
                     <p className="text-muted-foreground">
-                      Fill out the form below to create a new event for your audience
+                      Fill out the form below to create a new event for your
+                      audience
                     </p>
                   </div>
                   <EventForm onEventCreated={handleEventCreated} />
@@ -164,7 +171,9 @@ export default function DashboardContent() {
               <TabsContent value="manage" className="mt-0">
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-semibold">Manage Your Events</h2>
+                    <h2 className="text-2xl font-semibold">
+                      Manage Your Events
+                    </h2>
                     <p className="text-muted-foreground">
                       View, edit, and delete your existing events
                     </p>
@@ -177,12 +186,7 @@ export default function DashboardContent() {
         </motion.div>
       </div>
 
-      <Toaster 
-        position="bottom-right"
-        expand={true}
-        richColors
-        closeButton
-      />
+      <Toaster position="bottom-right" expand={true} richColors closeButton />
     </motion.div>
   );
 }
