@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/Theme-Provider";
+import { Toaster } from "@/components/ui/sonner";
 import {
   ClerkProvider,
   SignInButton,
@@ -59,6 +60,12 @@ export default function RootLayout({
                       >
                         Events
                       </a>
+                      <a
+                        className="transition-colors hover:text-foreground/80 text-foreground/60"
+                        href="/dashboard/events"
+                      >
+                        Dashboard
+                      </a>
                     </nav>
                   </SignedIn>
                 </div>
@@ -82,6 +89,12 @@ export default function RootLayout({
               </div>
             </header>
             <main className="min-h-screen bg-background">{children}</main>
+            <Toaster
+              position="bottom-right"
+              expand={true}
+              richColors
+              closeButton
+            />
           </ThemeProvider>
         </body>
       </html>
